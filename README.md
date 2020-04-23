@@ -12,4 +12,4 @@ on Login screen - admin/admin are saved in the respective table in the inmemomor
 - Inorder to view H2 console after starting the app, login using http://localhost:8080/h2-console/. 
 IF any issue with logging into H2 Console - retry using JDBC URL jdbc:h2:mem:testdb
 
-
+- Created a rest point that can be access through JQuery Ajax calls and you can also use this rest point to view Reward Details for CUSTOMERA - http://localhost:8080/customerRewardDetails/CUSTOMERA you can also use CUSTOMERB, CUSTOMERC through postman.
