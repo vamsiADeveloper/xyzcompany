@@ -1,1 +1,1 @@
-ERROR MESSAGE: ${errMsg}
+ERROR INFORMATION: ${errMsg}
