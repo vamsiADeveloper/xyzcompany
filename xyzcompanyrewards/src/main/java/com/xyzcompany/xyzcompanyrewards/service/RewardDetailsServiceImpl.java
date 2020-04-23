@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,9 @@ public class RewardDetailsServiceImpl implements RewardDetailsService{
 		Map<String, Long> monthTxCountsMap = txs.stream().collect(
                 Collectors.groupingBy(CustomerTransactions::getTransactionsForMonth, Collectors.counting()));
 		Map<String, BigDecimal> monthTxAmntMap = new HashMap<String, BigDecimal>();
+		Map<String, BigDecimal> monthRewardsMap = new HashMap<String, BigDecimal>();
 		getMonthAmtConsolidatedMap(txs, monthTxAmntMap);
+		getMonthRewardsConsolidatedMap(txs, monthRewardsMap);
 		 
 		
 		for(CustomerTransactions customerTransaction : txs) {
@@ -64,7 +65,7 @@ public class RewardDetailsServiceImpl implements RewardDetailsService{
 				RewardDetailsResource resource  =  RewardDetailsResourceBuilder.builder()
 						.withCustomerName(customerTransaction.getCustomerName())
 						.withTranscationAmount(monthTxAmntMap.get(customerTransaction.getTransactionsForMonth()))
-						.withRewardPointsEarned(RewardsCalculationHelper.calculateRewardPointsPerTx(customerTransaction.getTransactionAmount()))
+						.withRewardPointsEarned(monthRewardsMap.get(customerTransaction.getTransactionsForMonth()))
 						.withRewardsForMonth(customerTransaction.getTransactionsForMonth())
 						.withRewardsForyear(customerTransaction.getTransactionsForYear())
 						.withNumberOfTranscations(Math.toIntExact(monthTxCountsMap.get(customerTransaction.getTransactionsForMonth())))
@@ -88,7 +89,7 @@ public class RewardDetailsServiceImpl implements RewardDetailsService{
 		monthlyData.setRewardsForyear(txs.stream().map(CustomerTransactions::getTransactionsForYear).collect(Collectors.toList()).get(0));
 		List<BigDecimal> amountsPerTx = txs.stream().map(CustomerTransactions::getTransactionAmount).collect(Collectors.toList());
 		for(BigDecimal amt: amountsPerTx) {
-			txPointsList.add(RewardsCalculationHelper.calculateRewardPointsPerTx(amt));
+			txPointsList.add(RewardsCalculationHelper.calculateRewardPointsPerTx(amt).setScale(0,BigDecimal.ROUND_DOWN));
 		}
 		monthlyData.setAmountPerTx(amountsPerTx);
 		monthlyData.setRewardPointsPerTx(txPointsList);
@@ -103,6 +104,18 @@ public class RewardDetailsServiceImpl implements RewardDetailsService{
 					BigDecimal amount = monthTxAmntMap.get(txs.get(i).getTransactionsForMonth());
 					amount = amount.add(txs.get(i).getTransactionAmount());
 					monthTxAmntMap.put(txs.get(i).getTransactionsForMonth(), amount);
+				}
+		}
+	}
+	
+	private void getMonthRewardsConsolidatedMap(List<CustomerTransactions> txs, Map<String, BigDecimal> monthRewardsMap) {
+		for (int i=0; i<txs.size(); i++) { 
+				if (!monthRewardsMap.containsKey(txs.get(i).getTransactionsForMonth())) {
+					monthRewardsMap.put(txs.get(i).getTransactionsForMonth(), RewardsCalculationHelper.calculateRewardPointsPerTx(txs.get(i).getTransactionAmount()));
+				} else {
+					BigDecimal rewards = monthRewardsMap.get(txs.get(i).getTransactionsForMonth());
+					rewards = rewards.add(RewardsCalculationHelper.calculateRewardPointsPerTx(txs.get(i).getTransactionAmount()));
+					monthRewardsMap.put(txs.get(i).getTransactionsForMonth(), rewards);
 				}
 		}
 	}
