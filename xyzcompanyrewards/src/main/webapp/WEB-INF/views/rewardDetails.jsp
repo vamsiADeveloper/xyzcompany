@@ -78,17 +78,22 @@
   
   function displayCustomerDetails() {
 	  var selectedCust = $("#customerName").val();
-	  $.ajax({
-          type: "GET",
-          url: "/customerRewardDetails/"+selectedCust,
-          dataType: "html",
-          success: function(response) {
-        	  $("#customerInfoTable tbody, #totalRewards").html("");
-        	  buildCustomerTable(response, selectedCust);
-          },error: function (jqXHR, textStatus, errorThrown) {
-	        alert('Error: ' + "An error has occured, please retry or contact support");
-			}
-     });  
+	  if (selectedCust == '') {
+	       alert('Error: ' + "Enter a valid Customer");
+	  } else {
+		  $.ajax({
+	          type: "GET",
+	          url: "/customerRewardDetails/"+selectedCust,
+	          dataType: "html",
+	          success: function(response) {
+	        	  $("#customerInfoTable tbody, #totalRewards").html("");
+	        	  buildCustomerTable(response, selectedCust);
+	          },error: function (jqXHR, textStatus, errorThrown) {
+		        alert('Error: ' + "An error has occured, please retry or contact support");
+				}
+	     });  
+	  }
+	  
  }
 
   function  buildCustomerTable(customerObj, selectedCust) {
