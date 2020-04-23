@@ -9,4 +9,7 @@ on Login screen - admin/admin are saved in the respective table in the inmemomor
 
 -This application will pull 3 customers from Inmemory Database for the XYZ company showing total level records for each month and a consolodate rewards earned for each customer. You can click on View Details on each row to look at the detailed level line items.
 
+- Inorder to view H2 console after starting the app, login using http://localhost:8080/h2-console/. 
+IF any issue with logging into H2 Console - retry using JDBC URL jdbc:h2:mem:testdb
+
 
