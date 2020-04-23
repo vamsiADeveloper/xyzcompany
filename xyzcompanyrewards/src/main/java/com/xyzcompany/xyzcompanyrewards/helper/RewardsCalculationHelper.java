@@ -5,6 +5,12 @@ import java.util.List;
 
 public class RewardsCalculationHelper {
 	
+	/**
+	 * Calculates Reward points per transaction
+	 * 
+	 * @param totalTxAmt
+	 * @return calculated reward points
+	 */
 	public static BigDecimal calculateRewardPointsPerTx(BigDecimal totalTxAmt) {
 		BigDecimal rewardpoints = BigDecimal.ZERO;
 		if (totalTxAmt != null) {
@@ -22,7 +28,12 @@ public class RewardsCalculationHelper {
 	}
 	
 	
-	
+	/**
+	 * Adds up all the given reward points
+	 *  
+	 * @param rewardPointsPerTxList
+	 * @return calculated totalRewardPoints
+	 */
 	public static BigDecimal calculateRewardPointsTotal(List<BigDecimal> rewardPointsPerTxList) {
 		BigDecimal totalRewardPoint = BigDecimal.ZERO;
 		if (rewardPointsPerTxList != null && !rewardPointsPerTxList.isEmpty()) {
